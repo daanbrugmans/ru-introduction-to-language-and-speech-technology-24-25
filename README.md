@@ -1,1 +1,2 @@
-# ru-introduction-to-language-and-speech-technology-24-25
+# Introduction to Language and Speech Technology 2024/2025
+This repository contains the completed assignments for the Radboud University course [Introduction to Language and Speech Technology](https://www.ru.nl/courseguides/arts/courses/ma/rema-lc/let-rema-lcex19/) for the school year 2024-2025 as made by [Daan Brugmans](https://github.com/daanbrugmans).
