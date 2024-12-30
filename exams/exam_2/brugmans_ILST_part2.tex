@@ -1,4 +1,5 @@
 \documentclass{Interspeech2024}
+\usepackage{csquotes}
 
 % 2024-11-25 modified by Cristian Tejedor-García (cristian.tejedorgarcia@ru.nl) 
 
@@ -23,7 +24,7 @@
 % **************************************
 
 % Clearly state the focus of your chosen topic (add some extra information based on the topic/subtopic/categories that you want to focus).
-\title{Max 4-Page (+1 for Refs.) Project's Template for the ILST Course}
+\title{ILST Take-Home Exam 2 --- \\Speech Processing for Data Protection: \\Speaker Anonymization}
 
 
 % Full name, Radboud number and email. 
@@ -40,7 +41,7 @@
 \email{daan.brugmans@ru.nl}%, B@ru.nl, c@ru.nl}
 
 % min. 3 and max. 5
-\keywords{keyword1, keyword2, keyword3, keyword4, keyword5}
+\keywords{\textit{speaker anonymization}, \textit{voice privacy}, \textit{private speech}, \textit{adversarial anonymization}}
 
 \newcommand{\red}[1]{\textcolor{red}{#1}}
 
@@ -57,48 +58,112 @@
 
 % Max. 4 pages (+1 extra for References only)
 \section{Introduction}
+The popularity of Automatic Speech Recognition (ASR) and Automatic Speaker Verification (ASV) technologies among the general public continues to rise.
+As the usage of such state-of-the-art (SOTA) speech technologies continues to rise, there has developed an increased need for the protection of speech data.
+This is because speech is a biomarker: aside from the linguistic contents, an utterance contains information about the speaker, such as their sex and age category.
+With governmental bodies implementing consumer data protection laws, such as the EU's GDPR, and speech data containing information that may be considered sensitive, researchers have turned towards developing new methods for protecting the speech data of consumers.
 
-\begin{itemize}
-    \item Clearly outline the relevance and significance of your chosen topic.
-    \item State the \textbf{research question (RQ)} guiding your manuscript.
-    \item Tip: References to general reports and literature reviews are welcomed in this section.
-\end{itemize}
-
+One type of speech data protection is called \textit{speaker anonymization}, where an utterance's speaker is made anonymous by obfuscating, removing or replacing the information in the utterance pertaining to the speaker, while keeping the linguistic information intact.
+In this review, I will briefly discuss the current field of speaker anonymization research, and touch on some SOTA developments.
+For a more thorough review of the field, I recommend the work of Champion \cite{champion_2023_thesis}, which has guided me in my research.
+I will attempt to answer the following research question:
+\begin{displayquote}
+    \textit{What kinds of approaches to speaker anonymization are currently researched in SOTA research?}
+\end{displayquote}
 
 \section{Method}
-
 \subsection{Search Procedure}
+I mainly used the Semantic Scholar database for finding modern research papers.
+With Semantic Scholar, I searched for papers using the keyword "speaker anonymization" published from 2019 onwards.
+I read some of the most cited papers from that search result, then snowballed into reading other papers that those papers cited.
+In total, I considered 19 candidate papers for this review, of which I chose 8 to include in the final draft (including Champion's \cite{champion_2023_thesis} paper).
 
-\begin{itemize}
-    \item Explain in detail how you carried out the search of related papers: Databases used, keywords, number of papers found/discarded/filtered, exclusion and inclusion criteria and any limitation related to your search procedure.
-    \item Minimum 5 and maximum 10 scientific papers need to be analyzed in your project.
-    \item Remember that the final selected papers must have been published 2019 onwards.
-\end{itemize}
-
-
-
-
-
+While selecting which papers to include, I focused on distilling the selection of papers to one that showcases all types of approaches to speaker anonymization.
+Every type of speaker anonymization approach is represented by an amount of papers roughly corresponding to how popular that type of approach is in SOTA research, and the papers are all commonly cited and established methods for their type of approach.
+For the two newer types of approach, I also included a paper published that isn't as well known, but showcases an approach that is relatively new.
 
 \subsection{Models}
-Briefly describe the relevant information related to speech-based models of the papers found in a well-organized way.
-
+All speech-based models in the papers are neural networks, as are almost all speaker anonymization approaches.
+For the latter, both supervised and unsupervised networks are used.
+Supervised speaker anonymization networks are more common in older papers, and include DNNs and U-Nets.
+Unsupervised networks seem to be popular in newer works, with (V)AE's and GANs often used, as well as variations of them, such as the CycleGAN-VAE and HiFiGAN; Flows are used only in the newest paper.
 
 \subsection{Datasets}
-Briefly describe the relevant information related to the speech-based datasets used in the papers found in a well-organized way.
+There is a small set of speech datasets of which a subset is almost always included across all papers.
+These include LibriSpeech, VoxCeleb, and VCTK.
+LibriSpeech and VCTK are datasets of English speech, with VCTK including different accents, and VoxCeleb is an audio-visual dataset of multilingual speech.
+Other datasets are also used, such as TIMIT (English), VCC 2016, AISHELL (Mandarin) and CommonVoice (Italian and French).
 
 \subsection{Metrics}
-Briefly describe the relevant information related to the results metrics used in the papers found in a well-organized way.
+Speaker anonymization systems are often tested by measuring changes in ASR and ASV models.
+When measuring the ASR performance of the system, the Word Error Rate (WER) is used.
+When measuring the ASV performance of the system, the Equal Error Rate (EER) is a popular metric, and is a balanced metric of the true positive rate and false positive rate of the ASV system's predictions.
+Individual papers also use specific metrics relevant for their research.
 
 
 \section{Results}
-\begin{itemize}
-    \item Describe objectively (without personal thoughts) the results reported in at least five related papers (and maximum ten papers). A clear organization and structured synthesis (categories and common points) are preferred. 
-    \item Examples: Gao et al. \cite{gao2024} reported an accuracy of XX\%, while van Gelderen and Tejedor-García \cite{vanGelderen2024} proposed a system that achieved an accuracy of YY\% and \cite{zhou2023comprehensive}...
-    \item You might include subsections for specific subtopics, grouping similar papers results.
-    \item You might reference tables or figures of the papers but do not include them in your manuscript.
-\end{itemize}
+Current SOTA research on speaker anonymization can be split up into three types of approaches: signal processing approaches, voice conversion approaches, and adversarial attack approaches.
 
+\subsection{Signal Processing Approaches}
+In signal processing-based speaker anonymization, an utterance is anonymized by directly altering the speech with some effect.
+This is the most classic approach to anonymizing speakers, and is currently the most commonly used in practice, for example when anonymizing interviewees.
+The main advantage of this approach is that it is resource inexpensive and easy to apply: no datasets have to be collected for training neural networks, which don't have to be run on dedicated hardware.
+However, this method of speaker anonymization is also the least effective, as the effects applied to the speech signal often significantly worsen the utterance's intelligibility and can be relatively easy to reverse, de-anonymizing the speech.
+As a result, research on this type of speaker anonymization is limited.
+
+The work by Patino et al. \cite{patino_2021_mcadams} is a popular modern example of signal processing-based speech anonymization techniques.
+In this paper, the authors use the McAdams coefficient for anonymizing utterances, which is a variable used in a popular formula for adding timbre to speech. 
+This approach to speaker anonymization has the benefit of not requiring any computationally expensive techniques or a wealth of data. 
+The authors found that changing the McAdams coefficient is an effective way of greatly improving speaker anonymity while preventing big losses in speech accuracy.
+
+\subsection{Voice Conversion Approaches}
+Voice Conversion is a more modern approach to speaker anonymization.
+Voice Conversion (VC) is the task of converting the voice of an utterance from the source speaker to the target speaker by changing the characteristics of the source speaker's voice.
+A VC-based speaker anonymization approach, then, requires that the information pertaining to the speaker in an utterance can not only be extracted, but also independently from the linguistic information in the utterance.
+By only changing the information pertaining to the speaker, without altering linguistic information, the speaker of an utterance can be changed.
+By changing the speaker from the source speaker to a target speaker, the speech is essentially anonymized, as it cannot be traced back to the original speaker.
+
+The work by Fang et al. \cite{fang_2019_xvector} is a foundational example of modern speaker anonymization techniques through the changing of X-vectors. 
+By training a neural net on an ASV task (learning to recognize a speaker from a speech input), the network learns to internally develop a representation of the speaker identity, which it stores in one of its layers. 
+By extracting the embedding at this layer for a particular speaker's speech input, which is called the X-vector, one has a vector representation of a speaker's identity.
+In their paper, Fang et al. perform speaker anonymization by taking the average X-vector from a speaker's speech utterances, comparing it to an existing database of other X-vectors, from which an new average X-vector is calculated to create a “new” speaker identity, which is then used in an audio generator.
+By separating the linguistic contents of a speech utterance from the speaker information (using the X-vector), and supplying a different X-vector alongside the original linguistic information of the speech, a new speech utterance can be generated that retains the original message's linguistic contents using a “new”, anonymous, speaker.
+
+Yoo et al. \cite{yoo_2020_voice_conversion} present another example of speaker anonymization using Voice Conversion techniques. 
+The authors train a CycleVAE-GAN model that learns to generate an utterance that is linguistically the same as the input but uses a different speaker identity, expressed using an X-vector. 
+The authors try various methods for generating such speaker identity vectors to optimize for both anonymity and accuracy. 
+They also train a DNN and a GMM as speaker identification models. 
+Their results are mixed, showing that the balance between speaker anonymity and speech intelligibility seems to be a trade-off.
+
+Meyer et al. \cite{meyer_2023_adversarial_gan} also propose a GAN-based approach. 
+A speaker embedding (that includes an X-vector) is extracted from the source audio and is fed to a GAN, which generates a new speaker embedding. 
+By using this speaker embedding in the TTS component, the speech has become anonymized. 
+The authors find that their architecture has improved WER and EER than comparable SOTA models.
+
+\subsection{Adversarial Attack Approaches}
+Adversarial attack-based speaker anonymization is the newest type of anonymization technique, and is currently actively researched.
+Adversarial attacks are attacks on neural networks that create and use adversarial samples that alter the network's behavior.
+When most neural networks learn from data, they not only learn behavior that is both based on concrete information present in the data and helps them to fulfill the learning objective, but also behavior that doesn't use concrete information present in the data, yet still helps the network to fulfill the learning objective anyway.
+Adversarial samples exploit a network's "irrelevant" learned behaviors.
+Because these behaviors are not based on concrete information present in the data, adversarial examples can change the overall behavior of neural networks without degrading the network's performance on both clean and adversarial samples.
+Adversarial attack-based speaker anonymization approaches, then, use this property of neural networks to generate speech utterances whose speaker cannot be identified by the neural network.
+The main advantage of this approach is that an utterance can be anonymous to a neural network, whose behavior is exploited such that it cannot recognize the correct speaker, while the utterance sounds nearly identical to the original to the human ear.
+
+Chen et al. \cite{chen_2024_adversarial_yourtts} use the pretrained SOTA TTS model YourTTS to generate adversarial speech samples using the Fast Gradient Sign Method (FGSM), a popular method for creating adversarial samples in any DNN. 
+By applying the FGSM attack iteratively or in a one-shot fashion, an adversarial version of the original speech is generated where perturbations are introduced. 
+While these perturbations are barely susceptible to the human ear, they fool neural networks into behaving abnormally, preventing neural ASV systems from performing speaker verification properly. 
+The authors' method then works as a speaker anonymization method for neural networks.
+
+Deng et al. \cite{deng_2023_v_cloak} present V-Cloak, an example of one-shot adversarial speaker anonymization. 
+The authors of this paper train a custom Wave-U-Net to generate adversarial speech samples. 
+This is a one-shot approach that contrasts the common iterative approach to generating adversarial samples. 
+V-Cloak is trained on 3 respective loss functions that measure speaker anonymity, intelligibility, and naturalness. 
+The authors find that their model outperforms comparable state-of-the-art speaker anonymization models for both English and Chinese speech in both anonymity and intelligibility. 
+A user study conducted by the authors also found that V-Cloak's naturalness was generally best among state-of-the-art models.
+
+O'Reilly et al. \cite{oreilly_2022_voiceblock} propose VoiceBlock, an Encoder-Decoder-based system that is trained to anonymize user speech on the fly. 
+Their model's encoder extracts various features about a speaker that are passed to the bottleneck layer, the output of which is passed to a decoder, which filters the input. 
+VoiceBlock is able to process one chunk of audio in 0.25 seconds or less on a PC CPU.
 
 
 \section{Discussion}
