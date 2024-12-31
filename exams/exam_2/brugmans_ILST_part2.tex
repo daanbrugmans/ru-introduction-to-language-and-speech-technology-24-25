@@ -24,7 +24,7 @@
 % **************************************
 
 % Clearly state the focus of your chosen topic (add some extra information based on the topic/subtopic/categories that you want to focus).
-\title{ILST Take-Home Exam 2 --- \\Speech Processing for Data Protection: \\Speaker Anonymization}
+\title{ILST Take-Home Exam 2 --- \\Speech Processing for Data Protection: Speaker Anonymization}
 
 
 % Full name, Radboud number and email. 
@@ -50,8 +50,13 @@
 \maketitle
 
 
-\begin{abstract}   
-    1000 characters maximum. ASCII characters only. No citations. Provide a concise summary of your project, including key objectives and findings. 
+\begin{abstract}
+  This paper is a concise review of current state-of-the-art developments within the field of speaker anonymization.
+  Speaker anonymization concerns the anonymization of a speaker in a speech utterance, such that the original speaker cannot be recognized.
+  The approaches to speaker anonymization that are currently actively researched can be categorized into three types, two of which are based on neural networks.
+  The first type of approach is the signal processing-based approach, which anonymizes speech by altering the speech signal with some effect.
+  The second type of approach is the voice conversion-based approach, where the characteristics of the original speaker are replaced with those of a target speaker.
+  The third type of approach is the adversarial attack-based approach, where adversarial samples of the speech are generated that prevent neural networks from correctly predicting speakers.
 \end{abstract}
 
 
@@ -66,9 +71,10 @@ With governmental bodies implementing consumer data protection laws, such as the
 One type of speech data protection is called \textit{speaker anonymization}, where an utterance's speaker is made anonymous by obfuscating, removing or replacing the information in the utterance pertaining to the speaker, while keeping the linguistic information intact.
 In this review, I will briefly discuss the current field of speaker anonymization research, and touch on some state-of-the-art developments.
 For a more thorough review of the field, I recommend the work of Champion \cite{champion_2023_thesis}, which has guided me in my research.
+
 I will attempt to answer the following research question:
 \begin{displayquote}
-    \textit{What kinds of approaches to speaker anonymization are currently researched in state-of-the-art research?}
+    \textit{Which types of state-of-the-art approaches to speaker anonymization are currently actively researched?}
 \end{displayquote}
 
 \section{Method}
@@ -85,14 +91,14 @@ For the two newer types of approach, I also included a paper published that isn'
 \subsection{Models}
 All speech-based models in the papers are neural networks, as are almost all speaker anonymization approaches.
 For the latter, both supervised and unsupervised networks are used.
-Supervised speaker anonymization networks are more common in older papers, and include DNNs and U-Nets.
-Unsupervised networks seem to be popular in newer works, with (V)AE's and GANs often used, as well as variations of them, such as the CycleGAN-VAE and HiFiGAN; Flows are used only in the newest paper.
+Supervised speaker anonymization networks are more common in older papers, and include DNNs and U-Nets \cite{ronneberger_2015_u_net}.
+Unsupervised networks seem to be popular in newer works, with (V)AE's \cite{kingma_2013_auto-encoding} and GANs \cite{goodfellow_2014_generative} often used, as well as variations of them, such as the CycleGAN-VAE \cite{zhu_2017_cyclegan_vae} and HiFiGAN \cite{kong_2020_hifi_gan}; Flows \cite{rezende_2015_flows} are used only in the newest paper.
 
 \subsection{Datasets}
 There is a small set of speech datasets of which a subset is almost always included across all papers.
-These include LibriSpeech, VoxCeleb, and VCTK.
+This set consists of LibriSpeech \cite{panayotov_2015_librispeech}, VoxCeleb \cite{nagrani_2017_voxceleb,chung_2018_voxceleb2}, and VCTK \cite{yamagishi_2019_vctk}.
 LibriSpeech and VCTK are datasets of English speech, with VCTK including different accents, and VoxCeleb is an audio-visual dataset of multilingual speech.
-Other datasets are also used, such as TIMIT (English), VCC 2016, AISHELL (Mandarin) and CommonVoice (Italian and French).
+Other datasets are also used, such as TIMIT \cite{garofolo_1993_timit} (English), VCC 2016 \cite{toda_2016_vcc}, AISHELL \cite{bu_2017_aishell} (Mandarin) and CommonVoice \cite{ardila_2020_commonvoice} (Italian and French).
 
 \subsection{Metrics}
 Speaker anonymization systems are often tested by measuring changes in ASR and ASV models.
@@ -106,7 +112,7 @@ Current state-of-the-art research on speaker anonymization can be split up into 
 
 \subsection{Signal Processing Approaches}
 In signal processing-based speaker anonymization, an utterance is anonymized by directly altering the speech with some effect.
-This is the most classic approach to anonymizing speakers, and is currently the most commonly used in practice, for example when anonymizing interviewees.
+This is the most classic approach to anonymizing speakers, and is currently the most commonly used in practice, for example when anonymizing interviewees that appear on television.
 The main advantage of this approach is that it is resource inexpensive and easy to apply: no datasets have to be collected for training neural networks, which don't have to be run on dedicated hardware.
 However, this method of speaker anonymization is also the least effective, as the effects applied to the speech signal often significantly worsen the utterance's intelligibility and can be relatively easy to reverse, de-anonymizing the speech.
 As a result, research on this type of speaker anonymization is limited.
@@ -128,23 +134,26 @@ By training a neural net on an ASV task (learning to recognize a speaker from a 
 By extracting the embedding at this layer for a particular speaker's speech input, which is called the X-vector, one has a vector representation of a speaker's identity.
 In their paper, Fang et al. perform speaker anonymization by taking the average X-vector from a speaker's speech utterances, comparing it to an existing database of other X-vectors, from which an new average X-vector is calculated to create a “new” speaker identity, which is then used in an audio generator.
 By separating the linguistic contents of a speech utterance from the speaker information (using the X-vector), and supplying a different X-vector alongside the original linguistic information of the speech, a new speech utterance can be generated that retains the original message's linguistic contents using a “new”, anonymous, speaker.
+The authors use the VoxCeleb dataset for training their X-vector model, the VCTK dataset for evaluating their model, and the TIMIT dataset for training their ASR models.
 
 Yoo et al. \cite{yoo_2020_voice_conversion} present another example of speaker anonymization using Voice Conversion techniques. 
 The authors train a CycleVAE-GAN model that learns to generate an utterance that is linguistically the same as the input but uses a different speaker identity, expressed using an X-vector. 
 The authors try various methods for generating such speaker identity vectors to optimize for both anonymity and accuracy. 
 They also train a DNN and a GMM as speaker identification models. 
 Their results are mixed, showing that the balance between speaker anonymity and speech intelligibility seems to be a trade-off.
+The authors use the VCC 2016 corpus for training their model.
 
 Meyer et al. \cite{meyer_2023_adversarial_gan} also propose a GAN-based approach. 
 A speaker embedding (that includes an X-vector) is extracted from the source audio and is fed to a GAN, which generates a new speaker embedding. 
-By using this speaker embedding in the TTS component, the speech has become anonymized. 
-The authors find that their architecture has improved WER and EER than comparable state-of-the-art models.
+By using this speaker embedding in the Text-to-Speech (TTS) component, the speech has become anonymized. 
+The authors find that their architecture has improved WER and EER over comparable state-of-the-art models.
+The authors use the VoxCeleb and LibriSpeech datasets to train their model and VCTK for evaluation.
 
 \subsection{Adversarial Attack Approaches}
-Adversarial attack-based speaker anonymization is the newest type of anonymization technique, and is currently actively researched.
+Adversarial attack-based speaker anonymization is the newest type of anonymization approach, and is currently actively researched.
 Adversarial attacks are attacks on neural networks that create and use adversarial samples that alter the network's behavior.
 When most neural networks learn from data, they not only learn behavior that is both based on concrete information present in the data and helps them to fulfill the learning objective, but also behavior that doesn't use concrete information present in the data, yet still helps the network to fulfill the learning objective anyway.
-Adversarial samples exploit a network's "irrelevant" learned behaviors.
+Adversarial samples exploit these "irrelevant" learned behaviors.
 Because these behaviors are not based on concrete information present in the data, adversarial examples can change the overall behavior of neural networks without degrading the network's performance on both clean and adversarial samples.
 Adversarial attack-based speaker anonymization approaches, then, use this property of neural networks to generate speech utterances whose speaker cannot be identified by the neural network.
 The main advantage of this approach is that an utterance can be anonymous to a neural network, whose behavior is exploited such that it cannot recognize the correct speaker, while the utterance sounds nearly identical to the original to the human ear.
@@ -153,6 +162,7 @@ Chen et al. \cite{chen_2024_adversarial_yourtts} use the pretrained state-of-the
 By applying the FGSM attack iteratively or in a one-shot fashion, an adversarial version of the original speech is generated where perturbations are introduced. 
 While these perturbations are barely susceptible to the human ear, they fool neural networks into behaving abnormally, preventing neural ASV systems from performing speaker verification properly. 
 The authors' method then works as a speaker anonymization method for neural networks.
+YourTTS was trained using the VoxCeleb and VCTK datasets as train data, and the LibriSpeech dataset was used for evaluation.
 
 Deng et al. \cite{deng_2023_v_cloak} present V-Cloak, an example of one-shot adversarial speaker anonymization. 
 The authors of this paper train a custom Wave-U-Net to generate adversarial speech samples. 
@@ -160,11 +170,13 @@ This is a one-shot approach that contrasts the common iterative approach to gene
 V-Cloak is trained on 3 respective loss functions that measure speaker anonymity, intelligibility, and naturalness. 
 The authors find that their model outperforms comparable state-of-the-art speaker anonymization models for both English and Chinese speech in both anonymity and intelligibility. 
 A user study conducted by the authors also found that V-Cloak's naturalness was generally best among state-of-the-art models.
+The authors use the VoxCeleb dataset to train their anonymization model and the LibriSpeech, AISHELL, and CommonVoice datasets for evaluation.
 
 O'Reilly et al. \cite{oreilly_2022_voiceblock} propose VoiceBlock, an Encoder-Decoder-based system that is trained to anonymize user speech on the fly. 
 Their model's encoder extracts various features about a speaker that are passed to the bottleneck layer, the output of which is passed to a decoder, which filters the input.
 The output of this decoder contains adversarial perturbations that prevent neural ASV systems from recognizing speakers correctly while maintaining intelligibility to human listeners.
 VoiceBlock is able to process one chunk of audio in 0.25 seconds or less on a desktop CPU and is designed to be used in real-time applications, such as telephone communications.
+The authors use the LibriSpeech dataset to train their model and the VoxCeleb dataset for evaluation.
 
 
 \section{Discussion}
@@ -173,9 +185,9 @@ The trend of using machine learning techniques, especially neural network-based 
 Research on signal processing techniques for speaker anonymization seems to have become less popular as the popularity of neural networks has started to rise.
 There exists more research on signal processing for speaker anonymization prior to 2019, a period in which state-of-the-art neural architectures such as the transformer, conformer, GAN, VAE, and Flow were still developing or didn't exist yet.
 As in the past few years these neural architectures have led to breakthroughs throughout the field of speech technology as a whole, proving to provide a great wealth of new opportunities, research on speaker anonymization has also shifted towards the creation of neural solutions.
-This may be opposed to the opportunities that lie in new signal processing-based research, which may be lacking, since they used to be more heavily researched in the past, and amount of approaches possible seems much more limited than in neural approaches.
-Although signal processing-based approaches have been proven to increase anonymity of speech, this often goes hand-in-hand with a noticeable degradation in intelligibility and naturalness of speech, which is often distorted or even human-like.
-Patino et al's \cite{patino_2021_mcadams} work can be considered a signal processing technique with a relatively low loss in intelligibility.
+This may be opposed to the opportunities that lie in new signal processing-based research, which may be lacking, since the field was more heavily researched in the past, and the amount of new possible approaches seems to be much more limited than those found in neural solutions.
+Although signal processing-based approaches have been proven to increase anonymity of speech, this often goes hand-in-hand with a noticeable degradation in intelligibility and naturalness of speech, which is often distorted or even not human-like.
+Patino et al's \cite{patino_2021_mcadams} work can be considered a signal processing technique with a relatively low loss in intelligibility and naturalness.
 This is in contrast to neural methods, especially adversarial attack-based methods, which are able to maintain both intelligibility to both ASR models and human listeners as well as naturalness to the human ear.
 For these reasons, I expect that we will not see many signal processing-based approaches to speaker anonymization put into practice in the near future.
 
@@ -187,7 +199,7 @@ The disentanglement property of utterances has been further researched in the pa
 Outside the field of speaker anonymization, neural voice conversion methods have proven increasingly popular among the general public, and are often used for purposes of entertainment or even the spreading of misinformation.
 The familiarity of voice conversion amongst the general public may be a reason to expect that voice conversion-based speaker anonymization may be adopted in practice more easily by the general public.
 Additionally, I expect that the relevance of voice conversion-based approaches will remain for now, despite advances in adversarial attack-based approaches.
-This is because the adversarial attack-based approaches' main advantage, the ability to anonymize speakers for neural (ASV) systems only, also means that they aren't viable approaches for anonymizing speech that is meant to be hear by a human listener.
+This is because the adversarial attack-based approaches' main advantage, the ability to anonymize speakers for neural (ASV) systems only, also means that they aren't viable approaches for anonymizing speech that is meant to be heard by a human listener.
 
 Adversarial attack-based approaches have proven to be a valuable development in the protection of speaker identity when utterances are processed digitally.
 The fact that neural networks have the property of learning "irrelevant" behavior that can be exploited to change overall model behavior has made it possible to anonymize speakers in a way that prevents systems from automatically extracting and collecting speaker identities from speech data, while ensuring that the original speaker is still easily recognized by human listeners.
@@ -195,23 +207,33 @@ I argue, then, that a system of this type of approach to speaker anonymization h
 However, then, it would be vital to ensure that the chosen method can be run swiftly on mid-range consumer hardware.
 Existing work such as the work done by O'Reilly et al. \cite{oreilly_2022_voiceblock} shows that such a method may be feasible to implement.
 
-I expect that for both neural approaches to speaker anonymization, further developments will be made as the state-of-the-art of speech technologies continue to develop, and that those new SOTA models will be incorporated into new speaker anonymization models.
+I expect that for both neural approaches to speaker anonymization, further developments will be made as the state-of-the-art of speech technologies continues to develop, and that those new SOTA models will be incorporated into new speaker anonymization designs.
 One such example is the work by Chen et al. \cite{chen_2024_adversarial_yourtts}, who use a pretrained state-of-the-art Text-to-Speech model to generate adversarial samples.
 Much work done since 2019 has focused on both predictive and generative neural architectures that have been longer established, such as DNNs, CNNs, RNNs, GANs, and VAEs.
-I expect that in the coming years, we can expect new research on neural speaker anonymization approaches that incorporate neural architectures that were developed more recently, such as transformers, conformers, flow-based models, and diffusion-based models, and make use of state-of-the-art neural models, such as the multilingual Whisper ASR model to test anonymization performance across languages and TTS models such as YourTTS, as is used by Chen et al. \cite{chen_2024_adversarial_yourtts}.
+I expect that in the coming years, we can expect new research on neural speaker anonymization approaches that incorporate neural architectures that were developed more recently, such as transformers, conformers, flow-based models, and diffusion-based models, and make use of pretrained state-of-the-art neural models, such as the multilingual Whisper ASR model to test the intelligibility of anonymized speech across languages and TTS models such as YourTTS, as is used by Chen et al. \cite{chen_2024_adversarial_yourtts}.
 
 
 \section{Conclusion}
+Current research on speaker anonymization consist of three different types of approaches: the signal processing-based approach and two neural network-based approaches.
 
-\begin{itemize}
-    \item Summarize the key insights from your chosen topic.
-    \item Highlight any gaps in current research and suggest avenues for future exploration.
-    \item Personal thoughts about the course and the activities done in relation with the project are welcomed.
-    \item No references are needed in this section.
-\end{itemize}
+Signal processing-based approaches anonymize a speaker by directly altering the speech audio with some effect.
+Signal processing-based approaches for speaker anonymization are less popular in the current research field, as they often reduce the intelligibility and naturalness of speech too much for the anonymity they offer.
 
+The two neural network-based approaches are voice conversion and adversarial attacks.
+In voice conversion-based approaches, a speaker is anonymized by altering the characteristics of the speaker's voice in the speech audio to those of a target speaker.
+This makes the original speaker unrecognizable, and thus anonymous.
+Voice conversion-based approaches use embeddings to represent the qualities of a speaker's voice numerically.
+A popular type of speaker embedding is called the X-vector, and is extracted from a neural ASV model.
 
+In adversarial attack-based approaches, a speaker is anonymized through the use of adversarial attacks on a neural model.
+Adversarial attacks are methods of producing adversarial samples, which are inputs that exploit a neural network's learned behaviors to change the model's prediction or generation.
+Within the context of speaker anonymization, adversarial attacks are used to generate adversarial speech samples that prevent neural ASV systems from predicting the correct speaker, while maintaining a high level of intelligibility and naturalness for both neural systems and human listeners.
+The main advantage of adversarial attack-based approaches is that speakers are only anonymized to neural systems, with the original speaker still being recognizable for humans.
 
+Current research on speaker anonymization focuses on using these two types of neural network-based approaches.
+I suggest that future research may explore the usage of new, state-of-the-art methods, architectures, and models for speaker anonymization, as recent research has mostly focused on more well-established methods and architectures.
+Examples of such methods and architectures are the transformer- and conformer-architectures, flow-based models, the diffusion method, and more recently developed methods of performing adversarial attacks.
+The inclusion of pretrained state-of-the-art models may also improve speaker anonymization methods, such as Whisper and YourTTS.
 
 % Cite in IEEE Transactions format all the papers/studies/datasets/foundation models referred in your manuscript.
 % Include all details of each citation.
